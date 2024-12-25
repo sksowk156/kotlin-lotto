@@ -8,10 +8,8 @@ import lotto.model.WinningNumbers
 class LottoAutoController {
     fun buyLottos(purchaseAmountInput: String): Lottos {
         val purchasedLottoCount = Lotto.count(purchaseAmountInput.convertToInt())
-        return generateLottos(purchasedLottoCount)
+        return Lottos.fromCountInAuto(purchasedLottoCount)
     }
-
-    private fun generateLottos(lottoCount: Int): Lottos = Lottos.fromCountInAuto(lottoCount)
 
     fun matchLottoNumbers(
         winningNumberInput: String,
