@@ -128,7 +128,7 @@ class LottoAutoControllerTest {
         val prizeAmount =
             listOf(LottoMatchResult(LottoPrize.THREE, 1), LottoMatchResult(LottoPrize.FOUR, 1), LottoMatchResult(LottoPrize.FIVE, 1))
 
-        val returnRate = LottoMatchResults.from(prizeAmount).calculateReturnRate(purchaseAmount)
+        val returnRate = LottoMatchStatistic.from(prizeAmount).calculateReturnRate(purchaseAmount)
 
         assertEquals(68.33, returnRate, "수익률은 소수점 둘째 자리까지 계산되어야 합니다.")
     }

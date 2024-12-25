@@ -1,6 +1,6 @@
 package lotto
 
-import lotto.model.LottoMatchResults
+import lotto.model.LottoMatchStatistic
 import lotto.model.LottoPrize
 import lotto.model.Lottos
 import lotto.view.InputView
@@ -15,9 +15,9 @@ class LottoAuto {
     fun start() {
         val (purchaseAmountInput, lottos) = initLottos()
 
-        val matchedLottoNumberCounts = calculateLottoMatchResults(lottos)
+        val lottoMatchStatistic = calculateLottoMatchStatistic(lottos)
 
-        calculateProfit(matchedLottoNumberCounts, purchaseAmountInput)
+        calculateProfit(lottoMatchStatistic, purchaseAmountInput)
     }
 
     private fun initLottos(): Pair<String, Lottos> {
@@ -30,7 +30,7 @@ class LottoAuto {
         return Pair(purchaseAmountInput, lottos)
     }
 
-    private fun calculateLottoMatchResults(lottos: Lottos): LottoMatchResults {
+    private fun calculateLottoMatchStatistic(lottos: Lottos): LottoMatchStatistic {
         val winningNumberInput = inputView.getWinningNumberInput()
         val bonusNumberInput = inputView.getBonusNumberInput()
         val matchResults = lottoAutoController.matchLottoNumbers(winningNumberInput, bonusNumberInput, lottos)
@@ -49,7 +49,7 @@ class LottoAuto {
     }
 
     private fun calculateProfit(
-        matchedLottoNumberCounts: LottoMatchResults,
+        matchedLottoNumberCounts: LottoMatchStatistic,
         purchaseAmountInput: String,
     ) {
         val rate = lottoAutoController.calculateReturnRate(matchedLottoNumberCounts, purchaseAmountInput)

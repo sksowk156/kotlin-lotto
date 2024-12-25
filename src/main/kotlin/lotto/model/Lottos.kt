@@ -3,7 +3,7 @@ package lotto.model
 class Lottos private constructor(private val lottos: List<Lotto>) {
     fun getLottos() = lottos
 
-    fun countMatchingLottoNumbers(winningNumbers: WinningNumbers): LottoMatchResults {
+    fun countMatchingLottoNumbers(winningNumbers: WinningNumbers): LottoMatchStatistic {
         val winningNumberList = winningNumbers.winnigLottoNumbers
         val bonusNumber = winningNumbers.bonusNumber
 
@@ -21,7 +21,7 @@ class Lottos private constructor(private val lottos: List<Lotto>) {
                     LottoMatchResult(matchPrize = prize, count = count)
                 }
 
-        return LottoMatchResults.from(lottoMatchResults)
+        return LottoMatchStatistic.from(lottoMatchResults)
     }
 
     companion object {

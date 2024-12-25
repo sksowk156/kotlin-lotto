@@ -1,7 +1,7 @@
 package lotto
 
 import lotto.model.Lotto
-import lotto.model.LottoMatchResults
+import lotto.model.LottoMatchStatistic
 import lotto.model.Lottos
 import lotto.model.WinningNumbers
 
@@ -24,7 +24,7 @@ class LottoAutoController {
         winningNumberInput: String,
         bonusNumberInput: String,
         lottos: Lottos,
-    ): LottoMatchResults {
+    ): LottoMatchStatistic {
         val winningNumbers = winningNumberInput.convertToInts()
         val bonusNumber = bonusNumberInput.convertToInt()
         return lottos.countMatchingLottoNumbers(
@@ -33,9 +33,9 @@ class LottoAutoController {
     }
 
     fun calculateReturnRate(
-        lottoMatchResults: LottoMatchResults,
+        lottoMatchStatistic: LottoMatchStatistic,
         purchaseAmountInput: String,
-    ): Double = lottoMatchResults.calculateReturnRate(purchaseAmountInput.convertToInt())
+    ): Double = lottoMatchStatistic.calculateReturnRate(purchaseAmountInput.convertToInt())
 
     private fun String.convertToInt(): Int = this.toIntOrNull() ?: throw RuntimeException("숫자로 입력하지 않았습니다.")
 

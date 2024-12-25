@@ -19,7 +19,7 @@ class LottosTest {
         val lottos = Lottos.from(listOf(lotto1, lotto2, lotto2bonus, lotto3, lotto4, lotto5))
 
         val expectedResults =
-            LottoMatchResults.from(
+            LottoMatchStatistic.from(
                 listOf(
                     LottoMatchResult(matchPrize = LottoPrize.THREE, count = 1),
                     LottoMatchResult(matchPrize = LottoPrize.FOUR, count = 1),

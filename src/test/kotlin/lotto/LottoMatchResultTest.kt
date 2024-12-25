@@ -3,7 +3,7 @@ package lotto
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import lotto.model.LottoMatchResult
-import lotto.model.LottoMatchResults
+import lotto.model.LottoMatchStatistic
 import lotto.model.LottoPrize
 import lotto.util.MathCalculator
 import org.junit.jupiter.api.Test
@@ -18,13 +18,13 @@ class LottoMatchResultTest {
                 // 1 * 150,000 = 150,000
                 LottoMatchResult(LottoPrize.FIVE, 1),
             )
-        val lottoMatchResults = LottoMatchResults.from(matchResults)
+        val lottoMatchStatistic = LottoMatchStatistic.from(matchResults)
 
         val purchaseAmount = 100_000
         // 160000 / 100000 = 1.60
         val expectedReturnRate = MathCalculator.calculateRatio(160_000.0, 100_000.0, 2)
 
-        lottoMatchResults.calculateReturnRate(purchaseAmount) shouldBe expectedReturnRate
+        lottoMatchStatistic.calculateReturnRate(purchaseAmount) shouldBe expectedReturnRate
     }
 
     @Test
@@ -33,10 +33,10 @@ class LottoMatchResultTest {
             listOf(
                 LottoMatchResult(LottoPrize.THREE, 2),
             )
-        val lottoMatchResults = LottoMatchResults.from(matchResults)
+        val lottoMatchStatistic = LottoMatchStatistic.from(matchResults)
 
         shouldThrow<IllegalArgumentException> {
-            lottoMatchResults.calculateReturnRate(0)
+            lottoMatchStatistic.calculateReturnRate(0)
         }.message shouldBe "분모는 0이 될 수 없습니다."
     }
 
@@ -46,8 +46,8 @@ class LottoMatchResultTest {
             listOf(
                 LottoMatchResult(LottoPrize.THREE, 2),
             )
-        val lottoMatchResults = LottoMatchResults.from(matchResults)
+        val lottoMatchStatistic = LottoMatchStatistic.from(matchResults)
 
-        lottoMatchResults.findMatchCount(LottoPrize.FIVE) shouldBe 0
+        lottoMatchStatistic.findMatchCount(LottoPrize.FIVE) shouldBe 0
     }
 }
