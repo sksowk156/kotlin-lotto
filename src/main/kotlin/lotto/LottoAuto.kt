@@ -1,8 +1,7 @@
 package lotto
 
-import lotto.model.LottoMatchStatistic
 import lotto.model.LottoPrize
-import lotto.model.Lottos
+import lotto.model.LottoPurchaseResult
 import lotto.view.InputView
 import lotto.view.ResultView
 
@@ -13,27 +12,38 @@ class LottoAuto {
     private val resultView = ResultView()
 
     fun start() {
-        val (purchaseAmountInput, lottos) = initLottos()
+        val purchaseResult = purchaseLottos()
 
-        val lottoMatchStatistic = calculateLottoMatchStatistic(lottos)
-
-        calculateProfit(lottoMatchStatistic, purchaseAmountInput)
+        processLottoMatch(purchaseResult)
     }
 
-    private fun initLottos(): Pair<String, Lottos> {
+    private fun purchaseLottos(): LottoPurchaseResult {
         val purchaseAmountInput = inputView.getPurchasAmountInput()
         val lottos = lottoAutoController.buyLottos(purchaseAmountInput)
         resultView.renderPurchaseLottoCountOutput(lottos.getLottos().size)
         lottos.getLottos().forEach { lotto ->
             resultView.renderPurchaseLottoNumbersOutput(lotto.numbers.map { it.num })
         }
-        return Pair(purchaseAmountInput, lottos)
+        return LottoPurchaseResult(purchaseAmountInput, lottos)
     }
 
-    private fun calculateLottoMatchStatistic(lottos: Lottos): LottoMatchStatistic {
+    private fun processLottoMatch(purchaseResult: LottoPurchaseResult) {
         val winningNumberInput = inputView.getWinningNumberInput()
         val bonusNumberInput = inputView.getBonusNumberInput()
-        val matchResults = lottoAutoController.matchLottoNumbers(winningNumberInput, bonusNumberInput, lottos)
+
+        val matchResults =
+            lottoAutoController
+                .matchLottoNumbers(
+                    winningNumberInput,
+                    bonusNumberInput,
+                    purchaseResult.lottos,
+                )
+        val rate =
+            lottoAutoController
+                .calculateReturnRate(
+                    matchResults,
+                    purchaseResult.purchaseAmount,
+                )
 
         resultView.renderResultOutput()
         for (lottoPrize in LottoPrize.getLottoPrizes()) {
@@ -45,14 +55,6 @@ class LottoAuto {
                 lottoPrize.hasBonus,
             )
         }
-        return matchResults
-    }
-
-    private fun calculateProfit(
-        matchedLottoNumberCounts: LottoMatchStatistic,
-        purchaseAmountInput: String,
-    ) {
-        val rate = lottoAutoController.calculateReturnRate(matchedLottoNumberCounts, purchaseAmountInput)
         resultView.renderLottoProfit(rate)
     }
 }
