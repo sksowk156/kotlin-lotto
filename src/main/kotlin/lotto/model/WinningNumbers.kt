@@ -1,20 +1,20 @@
 package lotto.model
 
 class WinningNumbers private constructor(
-    private val _winnigLottoNumbers: List<LottoNumber>,
+    winnigLottoNumbers: List<LottoNumber>,
     val bonusNumber: LottoNumber,
 ) {
-    val winnigLottoNumbers: List<LottoNumber>
-        get() = _winnigLottoNumbers.toList()
+    val winnigLottoNumbers: List<LottoNumber> = winnigLottoNumbers.toList()
+        get() = field.toList()
 
     init {
-        require(_winnigLottoNumbers.size == LOTTO_NUMBER_COUNT) {
+        require(winnigLottoNumbers.size == LOTTO_NUMBER_COUNT) {
             "당첨 로또 번호는 정확히 6개여야 합니다."
         }
-        require(_winnigLottoNumbers.distinct().size == LOTTO_NUMBER_COUNT) {
+        require(winnigLottoNumbers.distinct().size == LOTTO_NUMBER_COUNT) {
             "당첨 로또 번호는 중복될 수 없습니다."
         }
-        require(!_winnigLottoNumbers.contains(bonusNumber)) {
+        require(!winnigLottoNumbers.contains(bonusNumber)) {
             "보너스 번호는 당첨 로또 번호와 중복될 수 없습니다."
         }
     }

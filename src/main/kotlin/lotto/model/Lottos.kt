@@ -11,10 +11,10 @@ class Lottos private constructor(private val lottos: List<Lotto>) {
             lottos
                 .map { lotto ->
                     val matchCount = lotto.countMatchingNumbers(winningNumberList)
-                    val hasBonus = (matchCount == 5) && lotto.numbers.contains(bonusNumber)
+                    val hasBonus = (matchCount == BONUS_MATCH_COUNT) && lotto.numbers.contains(bonusNumber)
                     LottoPrize.fromMatchCount(matchCount, hasBonus)
                 }
-                .filter { it != LottoPrize.NONE } // 당첨되지 않은 로또는 제외
+                .filter(::isWinningPrize) // 당첨되지 않은 로또는 제외
                 .groupingBy { it }
                 .eachCount()
                 .map { (prize, count) ->
@@ -24,8 +24,10 @@ class Lottos private constructor(private val lottos: List<Lotto>) {
         return LottoMatchStatistic.from(lottoMatchResults)
     }
 
+    private fun isWinningPrize(it: LottoPrize) = it != LottoPrize.NONE
+
     companion object {
-        private const val PRIZE_COUNT = 3
+        private const val BONUS_MATCH_COUNT = 5
 
         fun fromCountInAuto(count: Int): Lottos = from(List(count) { Lotto.fromAuto() })
 
