@@ -1,17 +1,10 @@
 package lotto.model
 
-class Lotto private constructor(private val numbers: List<LottoNumber>) {
-    fun getNumbers() = numbers
+class Lotto private constructor(numbers: List<LottoNumber>) {
+    val numbers: List<LottoNumber> = numbers.toList()
+        get() = field.toList()
 
-    fun countMatchingNumbers(winningNumbers: List<LottoNumber>): Int {
-        var matchCount = 0
-        for (number in winningNumbers) {
-            if (numbers.contains(number)) {
-                matchCount++
-            }
-        }
-        return matchCount
-    }
+    fun countMatchingNumbers(winningNumbers: List<LottoNumber>): Int = numbers.count { it in winningNumbers }
 
     companion object {
         private const val PRICE = 1000

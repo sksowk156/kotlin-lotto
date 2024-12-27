@@ -1,31 +1,32 @@
 package lotto
 
 import lotto.model.Lotto
-import lotto.model.LottoMatchResults
-import lotto.model.LottoPurchase
+import lotto.model.LottoMatchStatistic
 import lotto.model.Lottos
+import lotto.model.WinningNumbers
 
 class LottoAutoController {
-    fun countPurchasedLotto(input: String): LottoPurchase {
-        val purchaseAmount = input.convertToInt()
-        val lottoCount = Lotto.count(purchaseAmount)
-        return LottoPurchase(purchaseAmount, lottoCount)
+    fun buyLottos(purchaseAmountInput: String): Lottos {
+        val purchasedLottoCount = Lotto.count(purchaseAmountInput.convertToInt())
+        return Lottos.fromCountInAuto(purchasedLottoCount)
     }
 
-    fun generateLottos(lottoCount: Int): Lottos = Lottos.from(List(lottoCount) { Lotto.fromAuto() })
-
     fun matchLottoNumbers(
-        input: String,
+        winningNumberInput: String,
+        bonusNumberInput: String,
         lottos: Lottos,
-    ): LottoMatchResults {
-        val winningNumbers = input.convertToInts()
-        return lottos.countMatchingLottoNumbers(Lotto.from(winningNumbers))
+    ): LottoMatchStatistic {
+        val winningNumbers = winningNumberInput.convertToInts()
+        val bonusNumber = bonusNumberInput.convertToInt()
+        return lottos.countMatchingLottoNumbers(
+            WinningNumbers.from(winningNumbers, bonusNumber),
+        )
     }
 
     fun calculateReturnRate(
-        lottoMatchResults: LottoMatchResults,
-        purchaseAmount: Int,
-    ): Double = lottoMatchResults.calculateReturnRate(purchaseAmount)
+        lottoMatchStatistic: LottoMatchStatistic,
+        purchaseAmountInput: String,
+    ): Double = lottoMatchStatistic.calculateReturnRate(purchaseAmountInput.convertToInt())
 
     private fun String.convertToInt(): Int = this.toIntOrNull() ?: throw RuntimeException("숫자로 입력하지 않았습니다.")
 

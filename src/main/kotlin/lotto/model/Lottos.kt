@@ -3,20 +3,33 @@ package lotto.model
 class Lottos private constructor(private val lottos: List<Lotto>) {
     fun getLottos() = lottos
 
-    fun countMatchingLottoNumbers(winningNumbers: Lotto): LottoMatchResults {
+    fun countMatchingLottoNumbers(winningNumbers: WinningNumbers): LottoMatchStatistic {
+        val winningNumberList = winningNumbers.winnigLottoNumbers
+        val bonusNumber = winningNumbers.bonusNumber
+
         val lottoMatchResults =
             lottos
-                .map { it.countMatchingNumbers(winningNumbers.getNumbers()) }
-                .filter { it >= PRIZE_COUNT }
+                .map { lotto ->
+                    val matchCount = lotto.countMatchingNumbers(winningNumberList)
+                    val hasBonus = (matchCount == BONUS_MATCH_COUNT) && lotto.numbers.contains(bonusNumber)
+                    LottoPrize.fromMatchCount(matchCount, hasBonus)
+                }
+                .filter(::isWinningPrize) // 당첨되지 않은 로또는 제외
                 .groupingBy { it }
                 .eachCount()
-                .map { LottoMatchResult(matchPrize = LottoPrize.fromMatchCount(it.key), count = it.value) }
+                .map { (prize, count) ->
+                    LottoMatchResult(matchPrize = prize, count = count)
+                }
 
-        return LottoMatchResults.from(lottoMatchResults)
+        return LottoMatchStatistic.from(lottoMatchResults)
     }
 
+    private fun isWinningPrize(it: LottoPrize) = it != LottoPrize.NONE
+
     companion object {
-        private const val PRIZE_COUNT = 3
+        private const val BONUS_MATCH_COUNT = 5
+
+        fun fromCountInAuto(count: Int): Lottos = from(List(count) { Lotto.fromAuto() })
 
         fun from(lottos: List<Lotto>) = Lottos(lottos)
     }
