@@ -21,7 +21,7 @@ class LottoSystemController {
         return Lottos.fromCountInAuto(lottosCount)
     }
 
-    fun calculateAutoLottoCount(
+    fun calculateLottoDistribution(
         purchaseAmountInput: String,
         manualLottoCountInput: String,
     ): Pair<Int, Int> {

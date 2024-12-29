@@ -25,7 +25,7 @@ class LottoSystem {
         val manualLottoCountInput = inputView.getManualLottoCountInput()
 
         val (manualLottoCount, autoLottoCount) =
-            lottoSystemController.calculateAutoLottoCount(
+            lottoSystemController.calculateLottoDistribution(
                 purchaseAmountInput,
                 manualLottoCountInput,
             )

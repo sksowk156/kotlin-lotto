@@ -215,12 +215,12 @@ class LottoSystemControllerTest {
         "5000, 6",
         "10000, 11",
     )
-    fun `calculateAutoLottoCount with manualCount exceeding total`(
+    fun `calculateLottoDistribution with manualCount exceeding total`(
         purchaseAmountInput: String,
         manualLottoCountInput: String,
     ) {
         assertThatThrownBy {
-            lottoSystemController.calculateAutoLottoCount(
+            lottoSystemController.calculateLottoDistribution(
                 purchaseAmountInput,
                 manualLottoCountInput,
             )
@@ -236,12 +236,12 @@ class LottoSystemControllerTest {
         "1000, xyz",
         "one thousand, two",
     )
-    fun `calculateAutoLottoCount with non-numeric inputs`(
+    fun `calculateLottoDistribution with non-numeric inputs`(
         purchaseAmountInput: String,
         manualLottoCountInput: String,
     ) {
         assertThatThrownBy {
-            lottoSystemController.calculateAutoLottoCount(
+            lottoSystemController.calculateLottoDistribution(
                 purchaseAmountInput,
                 manualLottoCountInput,
             )
