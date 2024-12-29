@@ -11,10 +11,26 @@ class LottoSystemController {
         return Lottos.fromCountInAuto(purchasedLottoCount)
     }
 
-    fun generatelottos(lottoNumbersInput: List<String>): Lottos {
+    fun createLottosInManual(lottoNumbersInput: List<String>): Lottos {
         val lottoNumbers = lottoNumbersInput.map { it.convertToInts() }
 
         return Lottos.fromLottoNumbers(lottoNumbers)
+    }
+
+    fun createLottosInAuto(lottosCount: Int): Lottos {
+        return Lottos.fromCountInAuto(lottosCount)
+    }
+
+    fun calculateLottoDistribution(
+        purchaseAmountInput: String,
+        manualLottoCountInput: String,
+    ): Pair<Int, Int> {
+        val totalLottoCount = Lotto.calculateLottoCount(purchaseAmountInput.convertToInt())
+        val manualLottoCount = manualLottoCountInput.convertToInt()
+        val autoLottoCount = totalLottoCount - manualLottoCount
+
+        if (autoLottoCount < 0) throw RuntimeException("구매할 수 있는 로또의 개수를 넘었습니다.")
+        return manualLottoCount to autoLottoCount
     }
 
     fun matchLottoNumbers(

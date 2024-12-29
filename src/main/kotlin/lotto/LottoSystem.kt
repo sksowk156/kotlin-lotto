@@ -1,6 +1,5 @@
 package lotto
 
-import lotto.model.Lotto
 import lotto.model.LottoPrize
 import lotto.model.LottoPurchaseResult
 import lotto.model.Lottos
@@ -24,14 +23,18 @@ class LottoSystem {
 
         val manualLottoCountInput = inputView.getManualLottoCountInput()
 
-        val (manualLottoCount, autoLottoCount) = calculateLottoDistribution(purchaseAmountInput, manualLottoCountInput)
+        val (manualLottoCount, autoLottoCount) =
+            lottoSystemController.calculateLottoDistribution(
+                purchaseAmountInput,
+                manualLottoCountInput,
+            )
 
         resultView.renderPurchaseLottoCountOutput(
             manualLottoCount = manualLottoCount,
             autoLottoCount = autoLottoCount,
         )
 
-        val lottos = generateLottos(manualLottoCount, autoLottoCount)
+        val lottos = createLottos(manualLottoCount, autoLottoCount)
 
         lottos.getLottos().forEach { lotto ->
             resultView.renderPurchaseLottoNumbersOutput(lotto.numbers.map { it.num })
@@ -40,29 +43,17 @@ class LottoSystem {
         return LottoPurchaseResult(purchaseAmountInput, lottos)
     }
 
-    private fun generateLottos(
+    private fun createLottos(
         manualLottoCount: Int,
         autoLottoCount: Int,
     ): Lottos {
         val manualLottoNumbersInput = inputView.getManualLottoNumberInput(count = manualLottoCount)
 
-        val manualLottos = lottoSystemController.generatelottos(manualLottoNumbersInput)
+        val manualLottos = lottoSystemController.createLottosInManual(manualLottoNumbersInput)
 
-        val autoLottos = List(autoLottoCount) { Lotto.fromAuto() }
+        val autoLottos = lottoSystemController.createLottosInAuto(autoLottoCount)
 
-        return Lottos.from(manualLottos.getLottos() + autoLottos)
-    }
-
-    private fun calculateLottoDistribution(
-        purchaseAmountInput: String,
-        manualLottoCountInput: String,
-    ): Pair<Int, Int> {
-        val totalLottoCount = Lotto.calculateLottoCount(purchaseAmountInput.convertToInt())
-        val manualLottoCount = manualLottoCountInput.convertToInt()
-        val autoLottoCount = totalLottoCount - manualLottoCount
-
-        if (autoLottoCount < 0) throw RuntimeException("구매할 수 있는 로또의 개수를 넘었습니다.")
-        return Pair(manualLottoCount, autoLottoCount)
+        return Lottos.from(manualLottos.getLottos() + autoLottos.getLottos())
     }
 
     private fun processLottoMatch(purchaseResult: LottoPurchaseResult) {
