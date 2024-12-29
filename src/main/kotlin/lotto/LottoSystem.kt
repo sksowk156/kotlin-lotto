@@ -11,19 +11,21 @@ class LottoSystem {
     private val inputView = InputView()
     private val resultView = ResultView()
 
-    fun start() {
-        val purchasedLottos = purchaseLottos()
+    fun run() {
+        val (manualLottoCount, autoLottoCount) = calculateLottoCounts()
 
-        checkMatchingResult(purchasedLottos)
+        val lottos = generateLottos(manualLottoCount, autoLottoCount)
+
+        evaluateLottoResults(lottos)
     }
 
-    private fun purchaseLottos(): Lottos {
+    private fun calculateLottoCounts(): Pair<Int, Int> {
         val purchaseAmountInput = inputView.getPurchaseAmountInput()
 
         val manualLottoCountInput = inputView.getManualLottoCountInput()
 
         val (manualLottoCount, autoLottoCount) =
-            lottoSystemController.calculateLottoDistribution(
+            lottoSystemController.calculateAutoLottoCount(
                 purchaseAmountInput,
                 manualLottoCountInput,
             )
@@ -33,7 +35,20 @@ class LottoSystem {
             autoLottoCount = autoLottoCount,
         )
 
-        val lottos = createLottos(manualLottoCount, autoLottoCount)
+        return (manualLottoCount to autoLottoCount)
+    }
+
+    private fun generateLottos(
+        manualLottoCount: Int,
+        autoLottoCount: Int,
+    ): Lottos {
+        val manualLottoNumbersInput = inputView.getManualLottoNumberInput(count = manualLottoCount)
+
+        val manualLottos = lottoSystemController.generateLottosInManual(manualLottoNumbersInput)
+
+        val autoLottos = lottoSystemController.generateLottosInAuto(autoLottoCount)
+
+        val lottos = Lottos.from(manualLottos.getLottos() + autoLottos.getLottos())
 
         lottos.getLottos().forEach { lotto ->
             resultView.renderPurchaseLottoNumbersOutput(lotto.numbers.map { it.num })
@@ -42,20 +57,7 @@ class LottoSystem {
         return lottos
     }
 
-    private fun createLottos(
-        manualLottoCount: Int,
-        autoLottoCount: Int,
-    ): Lottos {
-        val manualLottoNumbersInput = inputView.getManualLottoNumberInput(count = manualLottoCount)
-
-        val manualLottos = lottoSystemController.createLottosInManual(manualLottoNumbersInput)
-
-        val autoLottos = lottoSystemController.createLottosInAuto(autoLottoCount)
-
-        return Lottos.from(manualLottos.getLottos() + autoLottos.getLottos())
-    }
-
-    private fun checkMatchingResult(purchasedLottos: Lottos) {
+    private fun evaluateLottoResults(purchasedLottos: Lottos) {
         val winningNumberInput = inputView.getWinningNumberInput()
         val bonusNumberInput = inputView.getBonusNumberInput()
 

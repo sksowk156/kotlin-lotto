@@ -11,17 +11,17 @@ class LottoSystemController {
         return Lottos.fromCountInAuto(purchasedLottoCount)
     }
 
-    fun createLottosInManual(lottoNumbersInput: List<String>): Lottos {
+    fun generateLottosInManual(lottoNumbersInput: List<String>): Lottos {
         val lottoNumbers = lottoNumbersInput.map { it.convertToInts() }
 
         return Lottos.fromLottoNumbers(lottoNumbers)
     }
 
-    fun createLottosInAuto(lottosCount: Int): Lottos {
+    fun generateLottosInAuto(lottosCount: Int): Lottos {
         return Lottos.fromCountInAuto(lottosCount)
     }
 
-    fun calculateLottoDistribution(
+    fun calculateAutoLottoCount(
         purchaseAmountInput: String,
         manualLottoCountInput: String,
     ): Pair<Int, Int> {
@@ -50,9 +50,9 @@ class LottoSystemController {
         purchaseAmount: Int,
     ): Double = lottoMatchStatistic.calculateReturnRate(purchaseAmount)
 
-    fun String.convertToInt(): Int = this.toIntOrNull() ?: throw RuntimeException("숫자로 입력하지 않았습니다.")
+    private fun String.convertToInt(): Int = this.toIntOrNull() ?: throw RuntimeException("숫자로 입력하지 않았습니다.")
 
-    fun String.convertToInts(): List<Int> =
+    private fun String.convertToInts(): List<Int> =
         this.split(",")
             .map { it.trim() }
             .filter { it.isNotEmpty() }
