@@ -25,7 +25,8 @@ class LottoSystemController {
         purchaseAmountInput: String,
         manualLottoCountInput: String,
     ): Pair<Int, Int> {
-        val totalLottoCount = Lotto.calculateLottoCount(purchaseAmountInput.convertToInt())
+        val purchaseAmount = purchaseAmountInput.convertToInt()
+        val totalLottoCount = Lotto.calculateLottoCount(purchaseAmount)
         val manualLottoCount = manualLottoCountInput.convertToInt()
         val autoLottoCount = totalLottoCount - manualLottoCount
 
@@ -50,7 +51,7 @@ class LottoSystemController {
         purchaseAmount: Int,
     ): Double = lottoMatchStatistic.calculateReturnRate(purchaseAmount)
 
-    private fun String.convertToInt(): Int = this.toIntOrNull() ?: throw RuntimeException("숫자로 입력하지 않았습니다.")
+    private fun String.convertToInt(): Int = this.toIntOrNull() ?: throw NumberFormatException("숫자로 입력하지 않았습니다.")
 
     private fun String.convertToInts(): List<Int> =
         this.split(",")

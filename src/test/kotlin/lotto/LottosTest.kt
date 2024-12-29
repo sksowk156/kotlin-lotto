@@ -1,7 +1,12 @@
 package lotto
 
 import io.kotest.matchers.shouldBe
-import lotto.model.*
+import lotto.model.Lotto
+import lotto.model.LottoMatchResult
+import lotto.model.LottoMatchStatistic
+import lotto.model.LottoPrize
+import lotto.model.Lottos
+import lotto.model.WinningNumbers
 import org.junit.jupiter.api.Test
 
 class LottosTest {
