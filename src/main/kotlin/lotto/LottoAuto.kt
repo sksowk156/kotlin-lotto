@@ -18,7 +18,7 @@ class LottoAuto {
     }
 
     private fun purchaseLottos(): LottoPurchaseResult {
-        val purchaseAmountInput = inputView.getPurchasAmountInput()
+        val purchaseAmountInput = inputView.getPurchaseAmountInput()
         val lottos = lottoAutoController.buyLottos(purchaseAmountInput)
         resultView.renderPurchaseLottoCountOutput(lottos.getLottos().size)
         lottos.getLottos().forEach { lotto ->

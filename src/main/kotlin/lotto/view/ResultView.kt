@@ -3,6 +3,14 @@ package lotto.view
 class ResultView {
     fun renderPurchaseLottoCountOutput(lottoCount: Int) = render(lottoCount.toString() + PURCHASE_LOTTO_COUNT)
 
+    fun renderPurchaseLottoCountOutput(
+        manualLottoCount: Int,
+        autoLottoCount: Int,
+    ) = render(
+        PURCHASE_MANUAL + manualLottoCount.toString() + "장, " +
+            PURCHASE_AUTO + autoLottoCount.toString() + PURCHASE_LOTTO_COUNT,
+    )
+
     fun renderPurchaseLottoNumbersOutput(lottoNumbers: List<Int>) = render(lottoNumbers.toString())
 
     fun renderResultOutput() = render(RESULT)
@@ -33,6 +41,8 @@ class ResultView {
     }
 
     private companion object {
+        const val PURCHASE_MANUAL = "수동으로"
+        const val PURCHASE_AUTO = "자동으로"
         const val PURCHASE_LOTTO_COUNT = "개를 구매했습니다."
         const val RESULT = "당첨 통계\n" + "--------"
     }
