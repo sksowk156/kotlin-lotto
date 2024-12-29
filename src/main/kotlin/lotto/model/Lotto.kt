@@ -7,7 +7,7 @@ class Lotto private constructor(numbers: List<LottoNumber>) {
     fun countMatchingNumbers(winningNumbers: List<LottoNumber>): Int = numbers.count { it in winningNumbers }
 
     companion object {
-        private const val PRICE = 1000
+        const val PRICE = 1000
         private const val LOTTO_NUMBER_COUNT = 6
         private val numbersMap: Map<Int, LottoNumber> = (1..45).associateWith { LottoNumber(it) }
 

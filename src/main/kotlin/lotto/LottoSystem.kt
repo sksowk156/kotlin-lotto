@@ -1,7 +1,6 @@
 package lotto
 
 import lotto.model.LottoPrize
-import lotto.model.LottoPurchaseResult
 import lotto.model.Lottos
 import lotto.view.InputView
 import lotto.view.ResultView
@@ -13,12 +12,12 @@ class LottoSystem {
     private val resultView = ResultView()
 
     fun start() {
-        val purchaseResult = purchaseLottos()
+        val purchasedLottos = purchaseLottos()
 
-        processLottoMatch(purchaseResult)
+        checkMatchingResult(purchasedLottos)
     }
 
-    private fun purchaseLottos(): LottoPurchaseResult {
+    private fun purchaseLottos(): Lottos {
         val purchaseAmountInput = inputView.getPurchaseAmountInput()
 
         val manualLottoCountInput = inputView.getManualLottoCountInput()
@@ -40,7 +39,7 @@ class LottoSystem {
             resultView.renderPurchaseLottoNumbersOutput(lotto.numbers.map { it.num })
         }
 
-        return LottoPurchaseResult(purchaseAmountInput, lottos)
+        return lottos
     }
 
     private fun createLottos(
@@ -56,7 +55,7 @@ class LottoSystem {
         return Lottos.from(manualLottos.getLottos() + autoLottos.getLottos())
     }
 
-    private fun processLottoMatch(purchaseResult: LottoPurchaseResult) {
+    private fun checkMatchingResult(purchasedLottos: Lottos) {
         val winningNumberInput = inputView.getWinningNumberInput()
         val bonusNumberInput = inputView.getBonusNumberInput()
 
@@ -65,13 +64,13 @@ class LottoSystem {
                 .matchLottoNumbers(
                     winningNumberInput,
                     bonusNumberInput,
-                    purchaseResult.lottos,
+                    purchasedLottos,
                 )
         val rate =
             lottoSystemController
                 .calculateReturnRate(
                     matchResults,
-                    purchaseResult.purchaseAmount,
+                    purchasedLottos.calculatePurchaseAmount(),
                 )
 
         resultView.renderResultOutput()
@@ -86,14 +85,4 @@ class LottoSystem {
         }
         resultView.renderLottoProfit(rate)
     }
-
-    fun String.convertToInt(): Int = this.toIntOrNull() ?: throw RuntimeException("숫자로 입력하지 않았습니다.")
-
-    fun String.convertToInts(): List<Int> =
-        this.split(",")
-            .map { it.trim() }
-            .filter { it.isNotEmpty() }
-            .map {
-                it.toIntOrNull() ?: throw NumberFormatException("숫자로 입력하지 않았습니다.")
-            }
 }

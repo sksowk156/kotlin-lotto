@@ -47,8 +47,8 @@ class LottoSystemController {
 
     fun calculateReturnRate(
         lottoMatchStatistic: LottoMatchStatistic,
-        purchaseAmountInput: String,
-    ): Double = lottoMatchStatistic.calculateReturnRate(purchaseAmountInput.convertToInt())
+        purchaseAmount: Int,
+    ): Double = lottoMatchStatistic.calculateReturnRate(purchaseAmount)
 
     fun String.convertToInt(): Int = this.toIntOrNull() ?: throw RuntimeException("숫자로 입력하지 않았습니다.")
 

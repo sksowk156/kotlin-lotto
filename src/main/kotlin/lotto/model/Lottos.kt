@@ -3,6 +3,8 @@ package lotto.model
 class Lottos private constructor(private val lottos: List<Lotto>) {
     fun getLottos() = lottos
 
+    fun calculatePurchaseAmount(): Int = lottos.size * Lotto.PRICE
+
     fun countMatchingLottoNumbers(winningNumbers: WinningNumbers): LottoMatchStatistic {
         val winningNumberList = winningNumbers.winnigLottoNumbers
         val bonusNumber = winningNumbers.bonusNumber
