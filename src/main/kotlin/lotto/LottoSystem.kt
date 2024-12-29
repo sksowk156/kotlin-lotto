@@ -5,8 +5,8 @@ import lotto.model.LottoPurchaseResult
 import lotto.view.InputView
 import lotto.view.ResultView
 
-class LottoAuto {
-    private val lottoAutoController = LottoAutoController()
+class LottoSystem {
+    private val lottoSystemController = LottoSystemController()
 
     private val inputView = InputView()
     private val resultView = ResultView()
@@ -19,7 +19,7 @@ class LottoAuto {
 
     private fun purchaseLottos(): LottoPurchaseResult {
         val purchaseAmountInput = inputView.getPurchaseAmountInput()
-        val lottos = lottoAutoController.buyLottos(purchaseAmountInput)
+        val lottos = lottoSystemController.buyLottos(purchaseAmountInput)
         resultView.renderPurchaseLottoCountOutput(lottos.getLottos().size)
         lottos.getLottos().forEach { lotto ->
             resultView.renderPurchaseLottoNumbersOutput(lotto.numbers.map { it.num })
@@ -32,14 +32,14 @@ class LottoAuto {
         val bonusNumberInput = inputView.getBonusNumberInput()
 
         val matchResults =
-            lottoAutoController
+            lottoSystemController
                 .matchLottoNumbers(
                     winningNumberInput,
                     bonusNumberInput,
                     purchaseResult.lottos,
                 )
         val rate =
-            lottoAutoController
+            lottoSystemController
                 .calculateReturnRate(
                     matchResults,
                     purchaseResult.purchaseAmount,

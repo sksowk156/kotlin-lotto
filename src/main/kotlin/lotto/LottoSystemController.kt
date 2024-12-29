@@ -5,7 +5,7 @@ import lotto.model.LottoMatchStatistic
 import lotto.model.Lottos
 import lotto.model.WinningNumbers
 
-class LottoAutoController {
+class LottoSystemController {
     fun buyLottos(purchaseAmountInput: String): Lottos {
         val purchasedLottoCount = Lotto.count(purchaseAmountInput.convertToInt())
         return Lottos.fromCountInAuto(purchasedLottoCount)

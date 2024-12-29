@@ -1,5 +1,5 @@
 package lotto
 
 fun main() {
-    LottoAuto().start()
+    LottoSystem().start()
 }
