@@ -24,7 +24,7 @@ class Lotto private constructor(numbers: List<LottoNumber>) {
             return Lotto(mappedNumbers)
         }
 
-        fun count(purchaseAmount: Int): Int {
+        fun calculateLottoCount(purchaseAmount: Int): Int {
             require(purchaseAmount > 0) { "금액은 양수입니다." }
             return purchaseAmount / PRICE
         }

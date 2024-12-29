@@ -5,7 +5,8 @@ class InputView {
 
     fun getManualLottoCountInput() = getInput(MANUAL_LOTTO_COUNT) ?: throw RuntimeException("수동으로 구매할 로또의 개수가 입력되지 않았습니다.")
 
-    fun getManualLottoNumberInput(count: Int) = getInputs(message = MANUAL_LOTTO_NUMBER, count = count)
+    fun getManualLottoNumberInput(count: Int) =
+        getInputs(message = MANUAL_LOTTO_NUMBER, count = count) ?: throw RuntimeException("숫자를 입력해야 합니다.")
 
     fun getWinningNumberInput() = getInput(WINNING_NUMBER) ?: throw RuntimeException("우승 번호가 입력되지 않았습니다.")
 
