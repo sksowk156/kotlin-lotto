@@ -26,14 +26,12 @@ class LottoSystem {
 
         val (manualLottoCount, autoLottoCount) = calculateLottoDistribution(purchaseAmountInput, manualLottoCountInput)
 
-        val (manualLottos, autoLottos) = generateLottos(manualLottoCount, autoLottoCount)
-
         resultView.renderPurchaseLottoCountOutput(
-            manualLottoCount = manualLottos.size,
-            autoLottoCount = autoLottos.size,
+            manualLottoCount = manualLottoCount,
+            autoLottoCount = autoLottoCount,
         )
 
-        val lottos = Lottos.from(manualLottos + autoLottos)
+        val lottos = generateLottos(manualLottoCount, autoLottoCount)
 
         lottos.getLottos().forEach { lotto ->
             resultView.renderPurchaseLottoNumbersOutput(lotto.numbers.map { it.num })
@@ -45,16 +43,22 @@ class LottoSystem {
     private fun generateLottos(
         manualLottoCount: Int,
         autoLottoCount: Int,
-    ): Pair<List<Lotto>, List<Lotto>> {
+    ): Lottos {
         val manualLottoNumbersInput = inputView.getManualLottoNumberInput(count = manualLottoCount)
 
+        val manualLottos = generatelottos(manualLottoNumbersInput)
+
+        val autoLottos = List(autoLottoCount) { Lotto.fromAuto() }
+
+        return Lottos.from(manualLottos + autoLottos)
+    }
+
+    private fun generatelottos(manualLottoNumbersInput: List<String>): List<Lotto> {
         val manualLottoNumbers =
             manualLottoNumbersInput.map { it.convertToInts() }
 
         val manualLottos = manualLottoNumbers.map { Lotto.from(it) }
-
-        val autoLottos = List(autoLottoCount) { Lotto.fromAuto() }
-        return Pair(manualLottos, autoLottos)
+        return manualLottos
     }
 
     private fun calculateLottoDistribution(
