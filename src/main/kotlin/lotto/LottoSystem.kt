@@ -1,7 +1,9 @@
 package lotto
 
+import lotto.model.Lotto
 import lotto.model.LottoPrize
 import lotto.model.LottoPurchaseResult
+import lotto.model.Lottos
 import lotto.view.InputView
 import lotto.view.ResultView
 
@@ -19,11 +21,38 @@ class LottoSystem {
 
     private fun purchaseLottos(): LottoPurchaseResult {
         val purchaseAmountInput = inputView.getPurchaseAmountInput()
-        val lottos = lottoSystemController.buyLottos(purchaseAmountInput)
-        resultView.renderPurchaseLottoCountOutput(lottos.getLottos().size)
-        lottos.getLottos().forEach { lotto ->
+
+        val manualLottoCountInput = inputView.getManualLottoCountInput()
+
+        val totalLottoCount = Lotto.count(purchaseAmountInput.convertToInt())
+        val manualLottoCount = manualLottoCountInput.convertToInt()
+        val autoLottoCount = totalLottoCount - manualLottoCount
+
+        if (autoLottoCount < 0) throw RuntimeException("구매할 수 있는 로또의 개수를 넘었습니다.")
+
+        val manualLottoNumbersInput = inputView.getManualLottoNumberInput(count = manualLottoCount)
+
+        val manualLottoNumbers =
+            manualLottoNumbersInput?.map { it.convertToInts() } ?: throw RuntimeException("숫자를 입력해야 합니다.")
+
+        val autoLottos = List(autoLottoCount) { Lotto.fromAuto() }
+
+        val manualLottos = manualLottoNumbers.map { Lotto.from(it) }
+
+        resultView.renderPurchaseLottoCountOutput(
+            manualLottoCount = manualLottoCount,
+            autoLottoCount = autoLottoCount,
+        )
+
+        manualLottos.forEach { lotto ->
             resultView.renderPurchaseLottoNumbersOutput(lotto.numbers.map { it.num })
         }
+
+        autoLottos.forEach { lotto ->
+            resultView.renderPurchaseLottoNumbersOutput(lotto.numbers.map { it.num })
+        }
+
+        val lottos = Lottos.from(autoLottos + manualLottos)
         return LottoPurchaseResult(purchaseAmountInput, lottos)
     }
 
@@ -57,4 +86,14 @@ class LottoSystem {
         }
         resultView.renderLottoProfit(rate)
     }
+
+    fun String.convertToInt(): Int = this.toIntOrNull() ?: throw RuntimeException("숫자로 입력하지 않았습니다.")
+
+    fun String.convertToInts(): List<Int> =
+        this.split(",")
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+            .map {
+                it.toIntOrNull() ?: throw NumberFormatException("숫자로 입력하지 않았습니다.")
+            }
 }

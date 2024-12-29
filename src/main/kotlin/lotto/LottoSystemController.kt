@@ -28,9 +28,9 @@ class LottoSystemController {
         purchaseAmountInput: String,
     ): Double = lottoMatchStatistic.calculateReturnRate(purchaseAmountInput.convertToInt())
 
-    private fun String.convertToInt(): Int = this.toIntOrNull() ?: throw RuntimeException("숫자로 입력하지 않았습니다.")
+    fun String.convertToInt(): Int = this.toIntOrNull() ?: throw RuntimeException("숫자로 입력하지 않았습니다.")
 
-    private fun String.convertToInts(): List<Int> =
+    fun String.convertToInts(): List<Int> =
         this.split(",")
             .map { it.trim() }
             .filter { it.isNotEmpty() }
