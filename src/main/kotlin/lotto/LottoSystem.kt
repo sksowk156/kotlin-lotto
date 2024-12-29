@@ -46,19 +46,11 @@ class LottoSystem {
     ): Lottos {
         val manualLottoNumbersInput = inputView.getManualLottoNumberInput(count = manualLottoCount)
 
-        val manualLottos = generatelottos(manualLottoNumbersInput)
+        val manualLottos = lottoSystemController.generatelottos(manualLottoNumbersInput)
 
         val autoLottos = List(autoLottoCount) { Lotto.fromAuto() }
 
-        return Lottos.from(manualLottos + autoLottos)
-    }
-
-    private fun generatelottos(manualLottoNumbersInput: List<String>): List<Lotto> {
-        val manualLottoNumbers =
-            manualLottoNumbersInput.map { it.convertToInts() }
-
-        val manualLottos = manualLottoNumbers.map { Lotto.from(it) }
-        return manualLottos
+        return Lottos.from(manualLottos.getLottos() + autoLottos)
     }
 
     private fun calculateLottoDistribution(

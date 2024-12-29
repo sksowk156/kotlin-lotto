@@ -31,6 +31,8 @@ class Lottos private constructor(private val lottos: List<Lotto>) {
 
         fun fromCountInAuto(count: Int): Lottos = from(List(count) { Lotto.fromAuto() })
 
+        fun fromLottoNumbers(lottoNumbers: List<List<Int>>): Lottos = from(lottoNumbers.map { Lotto.from(it) })
+
         fun from(lottos: List<Lotto>): Lottos = Lottos(lottos)
     }
 }

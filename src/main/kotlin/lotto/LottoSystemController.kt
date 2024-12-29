@@ -11,6 +11,12 @@ class LottoSystemController {
         return Lottos.fromCountInAuto(purchasedLottoCount)
     }
 
+    fun generatelottos(lottoNumbersInput: List<String>): Lottos {
+        val lottoNumbers = lottoNumbersInput.map { it.convertToInts() }
+
+        return Lottos.fromLottoNumbers(lottoNumbers)
+    }
+
     fun matchLottoNumbers(
         winningNumberInput: String,
         bonusNumberInput: String,
