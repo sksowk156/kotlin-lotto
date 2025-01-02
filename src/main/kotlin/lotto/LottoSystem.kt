@@ -61,7 +61,7 @@ class LottoSystem {
         val winningNumberInput = inputView.getWinningNumberInput()
         val bonusNumberInput = inputView.getBonusNumberInput()
 
-        val matchResults =
+        val matchStatistic =
             lottoSystemController
                 .matchLottoNumbers(
                     winningNumberInput,
@@ -71,20 +71,22 @@ class LottoSystem {
         val rate =
             lottoSystemController
                 .calculateReturnRate(
-                    matchResults,
+                    matchStatistic,
                     purchasedLottos.calculatePurchaseAmount(),
                 )
 
         resultView.renderResultOutput()
-        for (lottoPrize in LottoPrize.getLottoPrizes()) {
-            val matchCount = matchResults.findMatchCount(lottoPrize)
+
+        LottoPrize.getLottoPrizes().forEach {
+            val matchCount = matchStatistic.findMatchCount(it)
             resultView.renderLottoMatchResultOutput(
-                lottoPrize.matchCount,
-                lottoPrize.prizeAmount,
-                matchCount,
-                lottoPrize.hasBonus,
+                prizeCount = it.matchCount,
+                prizeAmount = it.prizeAmount,
+                matchingCount = matchCount,
+                hasBonus = it.hasBonus,
             )
         }
+
         resultView.renderLottoProfit(rate)
     }
 }

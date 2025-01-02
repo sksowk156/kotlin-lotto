@@ -1,8 +1,6 @@
 package lotto.view
 
 class ResultView {
-    fun renderPurchaseLottoCountOutput(lottoCount: Int) = render(lottoCount.toString() + PURCHASE_LOTTO_COUNT)
-
     fun renderPurchaseLottoCountOutput(
         manualLottoCount: Int,
         autoLottoCount: Int,
