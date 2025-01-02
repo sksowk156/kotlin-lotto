@@ -1,33 +1,32 @@
 package lotto.view
 
 class InputView {
-    fun getPurchaseAmountInput() = getInput(PURCHASE_AMOUNT) ?: throw RuntimeException("금액을 입력되지 않았습니다.")
+    fun getPurchaseAmountInput() = getInput(PURCHASE_AMOUNT)
 
-    fun getManualLottoCountInput() = getInput(MANUAL_LOTTO_COUNT) ?: throw RuntimeException("수동으로 구매할 로또의 개수가 입력되지 않았습니다.")
+    fun getManualLottoCountInput() = getInput(MANUAL_LOTTO_COUNT)
 
-    fun getManualLottoNumberInput(count: Int) =
-        getInputs(message = MANUAL_LOTTO_NUMBER, count = count) ?: throw RuntimeException("숫자를 입력해야 합니다.")
+    fun getManualLottoNumberInput(count: Int) = getInputs(message = MANUAL_LOTTO_NUMBER, count = count)
 
-    fun getWinningNumberInput() = getInput(WINNING_NUMBER) ?: throw RuntimeException("우승 번호가 입력되지 않았습니다.")
+    fun getWinningNumberInput() = getInput(WINNING_NUMBER)
 
-    fun getBonusNumberInput() = getInput(BONUS_NUMBER) ?: throw RuntimeException("보너스 번호가 입력되지 않았습니다.")
+    fun getBonusNumberInput() = getInput(BONUS_NUMBER)
 
-    private fun getInput(message: String): String? {
+    private fun getInput(message: String): String {
         println(message)
         val input = readlnOrNull()?.trim()
-        if (input.isNullOrEmpty()) return null
+        require(!input.isNullOrEmpty()) { "값을 입력해 주세요ㅣ." }
         return input
     }
 
     private fun getInputs(
         message: String,
         count: Int,
-    ): List<String>? {
+    ): List<String> {
         println(message)
         val inputs = mutableListOf<String>()
         repeat(count) {
             val input = readlnOrNull()?.trim()
-            if (input.isNullOrEmpty()) return null
+            require(!input.isNullOrEmpty()) { "값을 입력해 주세요ㅣ." }
             inputs.add(input)
         }
         return inputs

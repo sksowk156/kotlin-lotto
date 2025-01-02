@@ -5,19 +5,16 @@ import lotto.model.Lottos
 import lotto.model.WinningNumbers
 
 class LottoSystemController {
-    fun buyLottos(purchaseAmountInput: String): Lottos {
-        val purchasedLottoCount = Lottos.calculateLottoCount(purchaseAmountInput.convertToInt())
-        return Lottos.fromCountInAuto(purchasedLottoCount)
-    }
-
-    fun generateLottosInManual(lottoNumbersInput: List<String>): Lottos {
+    fun generateLottos(
+        lottosCount: Int,
+        lottoNumbersInput: List<String>,
+    ): Lottos {
         val lottoNumbers = lottoNumbersInput.map { it.convertToInts() }
 
-        return Lottos.fromLottoNumbers(lottoNumbers)
-    }
-
-    fun generateLottosInAuto(lottosCount: Int): Lottos {
-        return Lottos.fromCountInAuto(lottosCount)
+        return Lottos.from(
+            autoCount = lottosCount,
+            manualLottoNumbers = lottoNumbers,
+        )
     }
 
     fun calculateLottoDistribution(
@@ -25,11 +22,9 @@ class LottoSystemController {
         manualLottoCountInput: String,
     ): Pair<Int, Int> {
         val purchaseAmount = purchaseAmountInput.convertToInt()
-        val totalLottoCount = Lottos.calculateLottoCount(purchaseAmount)
         val manualLottoCount = manualLottoCountInput.convertToInt()
-        val autoLottoCount = totalLottoCount - manualLottoCount
 
-        if (autoLottoCount < 0) throw RuntimeException("구매할 수 있는 로또의 개수를 넘었습니다.")
+        val autoLottoCount = Lottos.calculateAutoLottoCount(purchaseAmount, manualLottoCount)
         return manualLottoCount to autoLottoCount
     }
 

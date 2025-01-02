@@ -1,7 +1,10 @@
 package lotto.model
 
-class Lottos private constructor(lottos: List<Lotto>) {
-    val lottos: List<Lotto> = lottos.toList()
+class Lottos private constructor(
+    private val autoLottos: List<Lotto>,
+    private val manualLottos: List<Lotto>,
+) {
+    val lottos: List<Lotto> = (autoLottos + manualLottos).toList()
         get() = field.toList()
 
     fun calculatePurchaseAmount(): Int = lottos.size * PRICE
@@ -34,16 +37,34 @@ class Lottos private constructor(lottos: List<Lotto>) {
 
         private const val BONUS_MATCH_COUNT = 5
 
-        fun fromCountInAuto(count: Int): Lottos {
-            require(count > 0) { "로또 개수는 양수여야 합니다." }
-            return from(List(count) { Lotto.fromAuto() })
+        fun from(
+            autoCount: Int = 0,
+            manualLottoNumbers: List<List<Int>> = emptyList(),
+        ): Lottos =
+            Lottos(
+                autoLottos = generateLottosInAuto(autoCount),
+                manualLottos = generateLottosInManual(manualLottoNumbers),
+            )
+
+        private fun generateLottosInAuto(autoCount: Int): List<Lotto> {
+            require(autoCount >= 0) { "로또 개수는 양수여야 합니다." }
+            return List(autoCount) { Lotto.fromAuto() }
         }
 
-        fun fromLottoNumbers(lottoNumbers: List<List<Int>>): Lottos = from(lottoNumbers.map { Lotto.from(it) })
+        private fun generateLottosInManual(lottoNumbers: List<List<Int>>): List<Lotto> = lottoNumbers.map { Lotto.from(it) }
 
-        fun from(lottos: List<Lotto>): Lottos = Lottos(lottos)
+        fun calculateAutoLottoCount(
+            purchaseAmount: Int,
+            manualLottoCount: Int,
+        ): Int {
+            val totalLottoCount = calculateLottoCount(purchaseAmount)
+            val autoLottoCount = totalLottoCount - manualLottoCount
 
-        fun calculateLottoCount(purchaseAmount: Int): Int {
+            require(autoLottoCount >= 0) { "구매할 수 있는 로또의 개수를 넘었습니다." }
+            return autoLottoCount
+        }
+
+        private fun calculateLottoCount(purchaseAmount: Int): Int {
             require(purchaseAmount > 0) { "금액은 양수입니다." }
             return purchaseAmount / PRICE
         }

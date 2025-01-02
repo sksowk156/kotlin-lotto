@@ -44,11 +44,11 @@ class LottoSystem {
     ): Lottos {
         val manualLottoNumbersInput = inputView.getManualLottoNumberInput(count = manualLottoCount)
 
-        val manualLottos = lottoSystemController.generateLottosInManual(manualLottoNumbersInput)
-
-        val autoLottos = lottoSystemController.generateLottosInAuto(autoLottoCount)
-
-        val lottos = Lottos.from(manualLottos.lottos + autoLottos.lottos)
+        val lottos =
+            lottoSystemController.generateLottos(
+                lottosCount = autoLottoCount,
+                lottoNumbersInput = manualLottoNumbersInput,
+            )
 
         lottos.lottos.forEach { lotto ->
             resultView.renderPurchaseLottoNumbersOutput(lotto.numbers.map { it.num })

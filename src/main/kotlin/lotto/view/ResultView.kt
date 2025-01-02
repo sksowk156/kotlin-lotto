@@ -5,8 +5,9 @@ class ResultView {
         manualLottoCount: Int,
         autoLottoCount: Int,
     ) = render(
-        PURCHASE_MANUAL + manualLottoCount.toString() + "장, " +
-            PURCHASE_AUTO + autoLottoCount.toString() + PURCHASE_LOTTO_COUNT,
+        """
+        $PURCHASE_MANUAL ${manualLottoCount}장, $PURCHASE_AUTO $autoLottoCount$PURCHASE_LOTTO_COUNT,
+        """.trimIndent(),
     )
 
     fun renderPurchaseLottoNumbersOutput(lottoNumbers: List<Int>) = render(lottoNumbers.toString())

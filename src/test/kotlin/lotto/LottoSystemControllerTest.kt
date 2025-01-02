@@ -1,6 +1,5 @@
 package lotto
 
-import lotto.model.Lotto
 import lotto.model.LottoMatchResult
 import lotto.model.LottoMatchStatistic
 import lotto.model.LottoPrize
@@ -24,64 +23,6 @@ class LottoSystemControllerTest {
         lottoSystemController = LottoSystemController()
     }
 
-    @DisplayName("구입 금액은 양수여야 한다.")
-    @ParameterizedTest(name = "{index} => input: ''{0}''")
-    @CsvSource(
-        "1000, 1",
-        "2000, 2",
-        "5000, 5",
-        "10000, 10",
-    )
-    fun checkPurchaseAmount1(
-        input: String,
-        expectedCount: Int,
-    ) {
-        val lottos = lottoSystemController.buyLottos(input)
-        assertThat(lottos.lottos.size).isEqualTo(expectedCount)
-    }
-
-    @DisplayName("구입 금액이 0이거나 음수면 예외가 발생한다.")
-    @ParameterizedTest(name = "{index} => input: ''{0}''")
-    @ValueSource(strings = ["0", "-1000"])
-    fun checkPurchaseAmount2(input: String) {
-        assertThatThrownBy { lottoSystemController.buyLottos(input) }
-            .isInstanceOf(RuntimeException::class.java)
-            .hasMessage("금액은 양수입니다.")
-    }
-
-    @DisplayName("구입 금액이 숫자가 아니면 예외가 발생한다.")
-    @ParameterizedTest(name = "{index} => input: ''{0}''")
-    @ValueSource(strings = ["abc", "-1dd"])
-    fun checkPurchaseAmount3(input: String) {
-        assertThatThrownBy { lottoSystemController.buyLottos(input) }
-            .isInstanceOf(RuntimeException::class.java)
-            .hasMessage("숫자로 입력하지 않았습니다.")
-    }
-
-    @DisplayName(value = "구매 개수는 1000원 단위로 계산한다.")
-    @ParameterizedTest(name = "{index} => input: ''{0}'' expected: ''{1}''")
-    @CsvSource(
-        "1600, 1",
-        "29100, 29",
-        "11111, 11",
-    )
-    fun countPurchasedLotto(
-        input: String,
-        expected: Int,
-    ) {
-        val lottos = lottoSystemController.buyLottos(input)
-        assertThat(lottos.lottos.size).isEqualTo(expected)
-    }
-
-    @DisplayName(value = "로또 번호는 각기 다른 숫자로 이루어진 6개의 숫자가 오름차순으로 정렬되어야 한다.")
-    @Test
-    fun generateLottoNumbers() {
-        val lotto = lottoSystemController.buyLottos("1000").lottos.first()
-
-        assertThat(lotto.numbers.size).isEqualTo(6)
-        assertThat(lotto.numbers.map { it.num }).isSorted
-    }
-
     @DisplayName("지난 주 당첨 번호는 6개의 숫자로 이루어져 있지 않다면 예외가 발생한다.")
     @ParameterizedTest(name = "{index} => winningNumbersInput=''{0}'', purchasedLottoCount=''{1}''")
     @ValueSource(
@@ -96,7 +37,7 @@ class LottoSystemControllerTest {
             lottoSystemController.matchLottoNumbers(
                 winningNumbersInput,
                 "8",
-                Lottos.fromCountInAuto(1),
+                Lottos.from(1),
             )
         }
             .isInstanceOf(RuntimeException::class.java)
@@ -109,16 +50,17 @@ class LottoSystemControllerTest {
         val input = listOf(1, 2, 3, 4, 5, 6) to 7
         val lottos =
             Lottos.from(
-                listOf(
-                    // 3개 일치
-                    Lotto.from(listOf(1, 2, 3, 7, 8, 9)),
-                    // 3개 일치
-                    Lotto.from(listOf(4, 5, 6, 10, 11, 12)),
-                    // 2개 일치
-                    Lotto.from(listOf(1, 2, 7, 8, 9, 10)),
-                    // 0개 일치
-                    Lotto.from(listOf(13, 14, 15, 16, 17, 18)),
-                ),
+                manualLottoNumbers =
+                    listOf(
+                        // 3개 일치
+                        listOf(1, 2, 3, 7, 8, 9),
+                        // 3개 일치
+                        listOf(4, 5, 6, 10, 11, 12),
+                        // 2개 일치
+                        listOf(1, 2, 7, 8, 9, 10),
+                        // 0개 일치
+                        listOf(13, 14, 15, 16, 17, 18),
+                    ),
             )
 
         val matchResult = lottos.countMatchingLottoNumbers(WinningNumbers.from(input.first, input.second))
@@ -143,7 +85,7 @@ class LottoSystemControllerTest {
     fun `createLottosInManual with valid input`() {
         val lottoNumbersInput = listOf("1,2,3,4,5,6", "7,8,9,10,11,12")
 
-        val lottos = lottoSystemController.generateLottosInManual(lottoNumbersInput)
+        val lottos = lottoSystemController.generateLottos(lottosCount = 0, lottoNumbersInput = lottoNumbersInput)
 
         assertThat(lottos.lottos).hasSize(2)
         assertThat(lottos.lottos.map { it.numbers.map { num -> num.num } })
@@ -165,7 +107,12 @@ class LottoSystemControllerTest {
     fun `createLottosInManual with invalid input1`(input: String) {
         val lottoNumbersInput = listOf(input)
 
-        assertThatThrownBy { lottoSystemController.generateLottosInManual(lottoNumbersInput) }
+        assertThatThrownBy {
+            lottoSystemController.generateLottos(
+                lottosCount = 0,
+                lottoNumbersInput = lottoNumbersInput,
+            )
+        }
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("중복되지 않는 로또 번호 6개를 입력해주세요")
     }
@@ -180,7 +127,12 @@ class LottoSystemControllerTest {
     fun `createLottosInManual with invalid input2`(input: String) {
         val lottoNumbersInput = listOf(input)
 
-        assertThatThrownBy { lottoSystemController.generateLottosInManual(lottoNumbersInput) }
+        assertThatThrownBy {
+            lottoSystemController.generateLottos(
+                lottosCount = 0,
+                lottoNumbersInput = lottoNumbersInput,
+            )
+        }
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("유효하지 않은 로또 번호 입니다.")
     }
@@ -189,7 +141,7 @@ class LottoSystemControllerTest {
     @ParameterizedTest(name = "{index} => count: {0}")
     @ValueSource(ints = [1, 5, 10])
     fun `createLottosInAuto with valid count`(count: Int) {
-        val lottos = lottoSystemController.generateLottosInAuto(count)
+        val lottos = lottoSystemController.generateLottos(lottosCount = count, lottoNumbersInput = emptyList())
 
         assertThat(lottos.lottos).hasSize(count)
         lottos.lottos.forEach { lotto ->
@@ -200,9 +152,14 @@ class LottoSystemControllerTest {
 
     @DisplayName("로또 개수가 0 이하일 때 예외가 발생한다.")
     @ParameterizedTest(name = "{index} => count: {0}")
-    @ValueSource(ints = [0, -1, -5])
+    @ValueSource(ints = [-1, -5])
     fun `createLottosInAuto with invalid count`(count: Int) {
-        assertThatThrownBy { lottoSystemController.generateLottosInAuto(count) }
+        assertThatThrownBy {
+            lottoSystemController.generateLottos(
+                lottosCount = count,
+                lottoNumbersInput = emptyList(),
+            )
+        }
             .isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("로또 개수는 양수여야 합니다.")
     }
