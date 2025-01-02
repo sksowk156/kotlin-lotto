@@ -7,7 +7,6 @@ class Lotto private constructor(numbers: List<LottoNumber>) {
     fun countMatchingNumbers(winningNumbers: List<LottoNumber>): Int = numbers.count { it in winningNumbers }
 
     companion object {
-        const val PRICE = 1000
         private const val LOTTO_NUMBER_COUNT = 6
         private val numbersMap: Map<Int, LottoNumber> = (1..45).associateWith { LottoNumber(it) }
 
@@ -22,11 +21,6 @@ class Lotto private constructor(numbers: List<LottoNumber>) {
                 }
 
             return Lotto(mappedNumbers)
-        }
-
-        fun calculateLottoCount(purchaseAmount: Int): Int {
-            require(purchaseAmount > 0) { "금액은 양수입니다." }
-            return purchaseAmount / PRICE
         }
 
         private fun generateNumbers(): List<LottoNumber> = numbersMap.values.shuffled().take(6).sortedBy { it.num }

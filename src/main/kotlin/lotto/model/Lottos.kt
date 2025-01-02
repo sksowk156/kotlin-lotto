@@ -4,7 +4,7 @@ class Lottos private constructor(lottos: List<Lotto>) {
     val lottos: List<Lotto> = lottos.toList()
         get() = field.toList()
 
-    fun calculatePurchaseAmount(): Int = lottos.size * Lotto.PRICE
+    fun calculatePurchaseAmount(): Int = lottos.size * PRICE
 
     fun countMatchingLottoNumbers(winningNumbers: WinningNumbers): LottoMatchStatistic {
         val winningNumberList = winningNumbers.winnigLottoNumbers
@@ -30,12 +30,22 @@ class Lottos private constructor(lottos: List<Lotto>) {
     private fun isWinningPrize(it: LottoPrize) = it != LottoPrize.NONE
 
     companion object {
+        private const val PRICE = 1000
+
         private const val BONUS_MATCH_COUNT = 5
 
-        fun fromCountInAuto(count: Int): Lottos = from(List(count) { Lotto.fromAuto() })
+        fun fromCountInAuto(count: Int): Lottos {
+            require(count > 0) { "로또 개수는 양수여야 합니다." }
+            return from(List(count) { Lotto.fromAuto() })
+        }
 
         fun fromLottoNumbers(lottoNumbers: List<List<Int>>): Lottos = from(lottoNumbers.map { Lotto.from(it) })
 
         fun from(lottos: List<Lotto>): Lottos = Lottos(lottos)
+
+        fun calculateLottoCount(purchaseAmount: Int): Int {
+            require(purchaseAmount > 0) { "금액은 양수입니다." }
+            return purchaseAmount / PRICE
+        }
     }
 }

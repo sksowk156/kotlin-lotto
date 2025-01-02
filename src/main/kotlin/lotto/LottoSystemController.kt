@@ -1,13 +1,12 @@
 package lotto
 
-import lotto.model.Lotto
 import lotto.model.LottoMatchStatistic
 import lotto.model.Lottos
 import lotto.model.WinningNumbers
 
 class LottoSystemController {
     fun buyLottos(purchaseAmountInput: String): Lottos {
-        val purchasedLottoCount = Lotto.calculateLottoCount(purchaseAmountInput.convertToInt())
+        val purchasedLottoCount = Lottos.calculateLottoCount(purchaseAmountInput.convertToInt())
         return Lottos.fromCountInAuto(purchasedLottoCount)
     }
 
@@ -26,7 +25,7 @@ class LottoSystemController {
         manualLottoCountInput: String,
     ): Pair<Int, Int> {
         val purchaseAmount = purchaseAmountInput.convertToInt()
-        val totalLottoCount = Lotto.calculateLottoCount(purchaseAmount)
+        val totalLottoCount = Lottos.calculateLottoCount(purchaseAmount)
         val manualLottoCount = manualLottoCountInput.convertToInt()
         val autoLottoCount = totalLottoCount - manualLottoCount
 
