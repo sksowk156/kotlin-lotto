@@ -48,9 +48,9 @@ class LottoSystem {
 
         val autoLottos = lottoSystemController.generateLottosInAuto(autoLottoCount)
 
-        val lottos = Lottos.from(manualLottos.getLottos() + autoLottos.getLottos())
+        val lottos = Lottos.from(manualLottos.lottos + autoLottos.lottos)
 
-        lottos.getLottos().forEach { lotto ->
+        lottos.lottos.forEach { lotto ->
             resultView.renderPurchaseLottoNumbersOutput(lotto.numbers.map { it.num })
         }
 

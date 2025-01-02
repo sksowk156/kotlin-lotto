@@ -37,7 +37,7 @@ class LottoSystemControllerTest {
         expectedCount: Int,
     ) {
         val lottos = lottoSystemController.buyLottos(input)
-        assertThat(lottos.getLottos().size).isEqualTo(expectedCount)
+        assertThat(lottos.lottos.size).isEqualTo(expectedCount)
     }
 
     @DisplayName("구입 금액이 0이거나 음수면 예외가 발생한다.")
@@ -70,13 +70,13 @@ class LottoSystemControllerTest {
         expected: Int,
     ) {
         val lottos = lottoSystemController.buyLottos(input)
-        assertThat(lottos.getLottos().size).isEqualTo(expected)
+        assertThat(lottos.lottos.size).isEqualTo(expected)
     }
 
     @DisplayName(value = "로또 번호는 각기 다른 숫자로 이루어진 6개의 숫자가 오름차순으로 정렬되어야 한다.")
     @Test
     fun generateLottoNumbers() {
-        val lotto = lottoSystemController.buyLottos("1000").getLottos().first()
+        val lotto = lottoSystemController.buyLottos("1000").lottos.first()
 
         assertThat(lotto.numbers.size).isEqualTo(6)
         assertThat(lotto.numbers.map { it.num }).isSorted
@@ -145,8 +145,8 @@ class LottoSystemControllerTest {
 
         val lottos = lottoSystemController.generateLottosInManual(lottoNumbersInput)
 
-        assertThat(lottos.getLottos()).hasSize(2)
-        assertThat(lottos.getLottos().map { it.numbers.map { num -> num.num } })
+        assertThat(lottos.lottos).hasSize(2)
+        assertThat(lottos.lottos.map { it.numbers.map { num -> num.num } })
             .containsExactly(
                 listOf(1, 2, 3, 4, 5, 6),
                 listOf(7, 8, 9, 10, 11, 12),
@@ -191,8 +191,8 @@ class LottoSystemControllerTest {
     fun `createLottosInAuto with valid count`(count: Int) {
         val lottos = lottoSystemController.generateLottosInAuto(count)
 
-        assertThat(lottos.getLottos()).hasSize(count)
-        lottos.getLottos().forEach { lotto ->
+        assertThat(lottos.lottos).hasSize(count)
+        lottos.lottos.forEach { lotto ->
             assertThat(lotto.numbers).hasSize(6)
             assertThat(lotto.numbers.map { it.num }).allMatch { it in 1..45 }
         }

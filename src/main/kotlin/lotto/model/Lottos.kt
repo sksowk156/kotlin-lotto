@@ -1,7 +1,8 @@
 package lotto.model
 
-class Lottos private constructor(private val lottos: List<Lotto>) {
-    fun getLottos() = lottos
+class Lottos private constructor(lottos: List<Lotto>) {
+    val lottos: List<Lotto> = lottos.toList()
+        get() = field.toList()
 
     fun calculatePurchaseAmount(): Int = lottos.size * Lotto.PRICE
 
